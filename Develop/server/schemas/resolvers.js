@@ -19,18 +19,13 @@ const resolvers = {
         saveBook: async (parent, { UserId, savedBook }) => {
             return User.findOneAndUpdate(
                 { _id: UserId },
-                {
-                    $addToSet: { savedBooks: savedBook },
-                },
-                {
-                    new: true,
-                    runValidators: true,
-                }
+                { $addToSet: { savedBooks: savedBook } },
+                { new: true, runValidators: true }
             );
         },
         login: async (parent, { username, email, password }) => {
             const user = User.findOne({ $or: [{ username: username }, { email: email }] });
-
+            
             if (!user) {
                 return res.status(400).json({ message: "Can't find this user" });
             }
