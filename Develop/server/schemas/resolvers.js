@@ -3,12 +3,12 @@ const { signToken } = require('../utils/auth');
 
 const resolvers = {
     Query: {
-        Users: async () => {
-            return User.find();
-        },
-
-        User: async (parent, { UserId }) => {
-            return User.findOne({ _id: UserId });
+        me: async (parent, args, context) => {
+            if (context.user) {
+                const userData = await User.findById(context.user._id).select("-__v -password");
+                return userData;
+            }
+            throw new AuthenticationError("There is no user logged in.");
         },
     },
 
@@ -38,7 +38,7 @@ const resolvers = {
             const token = signToken(user);
             res.json({ token, user });
         },
-        deleteBook: async (parent, { UserId, deletedBook }) => {
+        removeBook: async (parent, { UserId, deletedBook }) => {
             return User.findOneAndUpdate(
                 { _id: UserId },
                 { $pull: { savedBooks: deletedBook } },
