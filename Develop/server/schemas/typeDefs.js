@@ -5,11 +5,15 @@ const typeDefs = gql`
     me: User
   }
 
+  type Query {
+    users: [User]
+  }
+  
   type User {
     _id: ID
-    username: String
-    email: String
-    password: String
+    username: String!
+    email: String!
+    password: String!
     bookCount: Int
     savedBooks: [Book]
   }
